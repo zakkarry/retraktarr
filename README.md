@@ -14,7 +14,7 @@ The goal was to add the list to Radarr, set up a filter for the list with Exists
 
 This use case was admittedly very narrow, and a few more use cases have emerged since.
 
-- Backing up entire Radarr/Sonarr libraries, including movies/shows you do not already have downloaded. For example, if its missing in Radarr, PlexTraktSync would not help.
+- Backing up entire Radarr/Sonarr libraries, including movies/shows you do not already have downloaded. For example, if it's missing in Radarr, PlexTraktSync would not help.
 - Restoring your library easily by importing an entire (backed up) list (in the case of migrating OSs or catastrophic failures)
 - Giving someone the ability to browse media you have (without giving them access to Plex/Jellyfin/Emby)
 - _Possibly more I have not considered..._
@@ -47,7 +47,7 @@ A Trakt.tv account with an API setup is obviously necessary.
 
 ## Configuring reTraktarr
 
-`reTraktarr` uses a config file, named `config.conf` to get many of its settings. However, some of these are able to be overridden with the arguments you pass. You can run `python3 retraktarr.py` at any time to see the available options.
+`reTraktarr` uses a config file, named `config.conf` to get many of its settings. However, some of these can be overridden with the arguments you pass. You can run `python3 retraktarr.py` at any time to see the available options.
 
 To generate the config template, simply run `python3 retraktarr.py` in a directory without a `config.conf` file present.
 

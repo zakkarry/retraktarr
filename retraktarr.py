@@ -34,8 +34,8 @@ def main():
                         help="Specifies the Trakt.tv list privacy settings (private/friends/public - overrides config file settings)")
     parser.add_argument('-refresh', action='store_true',
                         help='Forces a refresh_token exchange (oauth) and sets the config to a new tokens.')
-
     args = parser.parse_args()
+
     config = Configuration('config.conf')
     if args.oauth:
         config.get_oauth(args)
@@ -51,6 +51,7 @@ def main():
 
     if args.radarr or args.all or args.sonarr:
         arr_api = ArrAPI()
+
     if args.radarr or args.all:
         arr_api.arrURL, arr_api.APIKey, trakt_api.list_privacy, trakt_api.list = config.validate_arr_configuration(
             trakt_api, 'Radarr', args)
@@ -66,12 +67,16 @@ def main():
             trakt_api, 'Sonarr', args)
         trakt_api.json, tvdb_ids, tmdb_ids, imdb_ids, trakt_ids = trakt_api.get_list(args,
                                                                                      arr_api.end_points['Sonarr'][2].rstrip('s'))
+
         arr_ids, arr_imdb, arrData = arr_api.get_list(args, 'Sonarr')
         trakt_api.add_to_list(args, arr_api.end_points['Sonarr'][2], arrData,
                               tvdb_ids, arr_api.end_points['Sonarr'][1], imdb_ids, arr_ids, arr_imdb, trakt_ids)
         print(f'Total Series: {len(arr_ids)}')
-    if args.sonarr or args.radarr or args.all:
         exit(1)
+
+    if args.radarr or args.all:
+        exit(1)
+
     parser.print_help()
 
 
