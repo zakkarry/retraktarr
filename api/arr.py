@@ -34,46 +34,54 @@ class ArrAPI:
             print(f"{arr}: {error}")
             exit(1)
 
-    def get_qp(self, arr, qp):
-        response = self.arr_get(arr, "qualityprofile")
+    def get_id(self, arr, search_term, endpoint, term):
+        # sends a request to get all quality profiles
+        response = self.arr_get(arr, endpoint)
 
-        qp_dict = {item['name']: item['id']
-                   for item in response.json()}
-        if qp_dict.get(qp) is None:
-            print(f"{arr} Error: No matching quality profile found.")
-            exit(1)
+        # creates a dict for the term: id
+        dict = {item[term]: item['id']
+                for item in response.json()}
 
-        return qp_dict.get(qp)
-
-    def get_tags(self, arr, tag):
-        response = self.arr_get(arr, "tag")
-
-        tag_dict = {item['label']: item['id']
-                    for item in response.json()}
-        if tag_dict.get(tag) is None:
+        # if it can't find an id for the term error and exit
+        if dict.get(search_term) is None:
             print(f"{arr} Error: No matching tag found.")
             exit(1)
 
-        return tag_dict.get(tag)
+        # return the id
+        return dict.get(search_term)
 
     def get_list(self, args, arr):
+        # sends the get request to the movies/series arr endpoint
         response = self.arr_get(arr, f"{self.end_points[arr][0]}")
         arrData = {}
 
+        # parsing out the tmdb/tvdb/imdb id's,
+        #  monitored status, quality profile id, title, and any tags
         for item in response.json():
             arrData[item[f'{self.end_points[arr][1]}Id']] = [item.get('imdbId'), item.get(
                 'monitored'), item.get('qualityProfileId'), item.get('title'), item.get('tags')]
         arr_ids = list(arrData.keys())
 
+        # if its monitored, add to arr ids
         if args.mon:
             arr_ids = [key for key in arrData if arrData[key][1]]
-        if args.qualityprofile:
-            arr_ids = list(filter(lambda item: arrData.get(item, [None])[
-                2] is self.get_qp(arr, args.qualityprofile), arr_ids))
-        if args.tag:
-            arr_ids = list(filter(lambda item: self.get_tags(
-                arr, args.tag) in arrData.get(item, [None])[4], arr_ids))
 
+        # get the current filtered arr_ids that qualify for the specified quality profile
+        if args.qualityprofile:
+            qp_id = self.get_id(arr, args.qualityprofile,
+                                'qualityprofile', 'name')
+            arr_ids = list(filter(lambda item: arrData.get(item, [None])[
+                2] is qp_id, arr_ids))
+
+        # same as above, but for tags
+        if args.tag:
+            tag_id = self.get_id(arr, args.tag,
+                                 'tag', 'label')
+            arr_ids = list(
+                filter(lambda item: tag_id in arrData.get(item, [None])[4], arr_ids))
+
+        # if imdb id is in arr, add it to the imdb id list
         arr_imdb = [value[1][0] for value in arrData.items(
         ) if value[1][0] is not None and value[0] in arr_ids]
+
         return arr_ids, arr_imdb, arrData

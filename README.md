@@ -1,16 +1,16 @@
 # reTraktarr
 
-retraktarr is a "reverse" Trakt.tv list implementation for Radarr/Sonarr that creates Trakt.tv lists of your movies/series using APIs.
+`reTraktarr` is a "reverse" [Trakt.tv](https://www.trakt.tv) list implementation for [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) that creates [Trakt.tv](https://www.trakt.tv) lists for your movies/series using APIs.
 
 ## Introduction
 
-`reTraktarr` is a Python script to sync your Radarr/Sonarr library to a Trakt.tv lists using the respective APIs.
+`reTraktarr` is a Python script to sync your [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) library to a [Trakt.tv](https://www.trakt.tv) lists using the respective APIs.
 
 The original idea stemmed from my wanting to have a list of monitored movies I could share with friends. This was to be the equivalent of a mdblist, but cherry-picked. Providing a more curated list of what **I** believed was worth considering to watch for downloading.
 
 ## Uses
 
-The goal was to add the list to Radarr, set up a filter for the list with Exists in Library and On Exclusion List = false, and allow friends to easily keep up to date with my recommended movies through the Discover tab.
+The goal was to add the list to [Radarr](https://radarr.video), set up a filter for the list with Exists in Library and On Exclusion List = false, and allow friends to easily keep up to date with my recommended movies through the Discover tab.
 
 This use case was admittedly very narrow, and a few more use cases have emerged since.
 
@@ -23,20 +23,20 @@ This use case was admittedly very narrow, and a few more use cases have emerged 
 
 - Python 3 (including `requests` module)
   - `pip3 install requests`
-- Radarr or Sonarr
-- A Trakt.tv account with API App configured
+- [Radarr](https://radarr.video) and/or [Sonarr](https://sonarr.tv)
+- A [Trakt.tv](https://www.trakt.tv) account with [API App configured](#trakttv-api-app-setup)
 
 ## Arr Support
 
-`reTraktarr` supports both Radarr and Sonarr in sourcing the media to sync to your lists. You can specify either or both for syncing, as well as filter what should be added with CLI arguments.
+`reTraktarr` supports both [Radarr](https://radarr.video) and [Sonarr](https://sonarr.tv) in sourcing the media to sync to your lists. You can specify either or both for syncing, as well as filter what should be added with CLI arguments.
 
 `reTraktarr` will need API access to whichever Arr(s) you intend to use.
 
-## Trakt.tv API App Setup
+## [Trakt.tv](https://www.trakt.tv) API App Setup
 
-A Trakt.tv account with an API setup is obviously necessary.
+A [Trakt.tv](https://www.trakt.tv) account with an [API set up](#trakttv-api-app-setup) is obviously necessary.
 
-- 🚨Note: Trakt.tv lists have limits. You can read their official statement [here](https://twitter.com/trakt/status/1536751362943332352/photo/1)🚨
+- 🚨Note: [Trakt.tv](https://www.trakt.tv) lists have limits. You can read their official statement [here](https://twitter.com/trakt/status/1536751362943332352/photo/1)🚨
 
 1. Head to [Trakt.tv API App Setup Page](https://trakt.tv/oauth/applications)
 2. Create a new application, you will only **need** to fill `Name` and `RedirectURI`
@@ -89,5 +89,6 @@ options:
 - Unless a list is specified using `-list` - when you use `-all` or `-r -s` - each Arr will sync to the list specified in the config.conf file.
 - Using filtered syncs with `-all` is not recommended, consider chaining multiple runs.
 - Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of -cat)
+- If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
 
 [start a discussion](https://github.com/zakkarry/reTraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/reTraktarr/issues/new)
