@@ -4,6 +4,8 @@ import configparser
 import os
 import requests
 
+# validation and config generation - pretty standard shit
+
 
 class Configuration:
     def __init__(self, config_file):
@@ -14,10 +16,10 @@ class Configuration:
             try:
                 self.conf['Trakt'] = {
                     'client_id': '',
-                    'sclient_ecret': '',
+                    'client_secret': '',
                     'username': '',
                     'redirect_uri': '',
-                    'oauth2_token': ''
+                    'oauth2_token': '',
                 }
                 self.conf['Radarr'] = {
                     'url': '',
@@ -115,16 +117,18 @@ class Configuration:
         try:
             oauth2_bearer = self.conf.get('Trakt', 'oauth2_token')
             trakt_api_key = self.conf.get('Trakt', 'client_id')
+            trakt_secret = self.conf.get('Trakt', 'client_secret')
             trakt_user = self.conf.get('Trakt', 'username')
         except configparser.Error as error:
             print(
                 f"Error occurred while reading the configuration values: {error}")
             exit(1)
 
-        if len(oauth2_bearer) != 64 or len(trakt_api_key) != 64:
+        # validate the lengths of all the keys are correct
+        if len(oauth2_bearer) != 64 or len(trakt_api_key) != 64 or len(trakt_secret) != 64:
             print(
-                "Error: Invalid configuration values. [Trakt] oauth2_token and/or api_key should have lengths of 64 characters.")
-            print("Run with -o parameter and oauth_code, username, redirect_uri, client_id, and client_secret values set in config.")
+                "Error: Invalid configuration values. [Trakt] oauth2_token/client_id/client_secret should all have lengths of 64 characters.")
+            print("Run with -o parameter with accurate username, redirect_uri, client_id, and client_secret values set in config.")
             exit(1)
         return oauth2_bearer, trakt_api_key, trakt_user
 

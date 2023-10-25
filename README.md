@@ -21,7 +21,7 @@ This use case was admittedly very narrow, and a few more use cases have emerged 
 
 ## Requirements
 
-- Python 3 (including `requests` module)
+- [Python 3](https://www.python.org/downloads/) (including `requests` module)
   - `pip3 install requests`
 - [Radarr](https://radarr.video) and/or [Sonarr](https://sonarr.tv)
 - A [Trakt.tv](https://www.trakt.tv) account with [API App configured](#trakttv-api-app-setup)
@@ -90,5 +90,8 @@ options:
 - Using filtered syncs with `-all` is not recommended, consider chaining multiple runs.
 - Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of -cat)
 - If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
+- If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until you're list is processed completely.
 
 [start a discussion](https://github.com/zakkarry/reTraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/reTraktarr/issues/new)
+
+[support me with a coffee](https://www.buymeacoffee.com/zak.ary)

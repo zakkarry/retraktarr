@@ -34,6 +34,8 @@ def main():
                         help="Specifies the Trakt.tv list privacy settings (private/friends/public - overrides config file settings)")
     parser.add_argument('--refresh', action='store_true',
                         help='Forces a refresh_token exchange (oauth) and sets the config to a new tokens.')
+    parser.add_argument('--timeout', type=str,
+                        help='Specifies the timeout in seconds to use for POST commands to Trakt.tv')
     args = parser.parse_args()
 
     config = Configuration('config.conf')
@@ -48,7 +50,8 @@ def main():
         trakt_api.list = args.list
     if (args.privacy):
         trakt_api.list_privacy = args.privacy
-
+    if (args.timeout):
+        trakt_api.post_timeout = args.timeout
     if args.radarr or args.all or args.sonarr:
         arr_api = ArrAPI()
 

@@ -17,6 +17,7 @@ class TraktAPI:
         self.list_len = []
         self.list_privacy = 'public'
         self.list_limit = 1000
+        self.post_timeout = 60
         self.traktSession = requests.Session()
         self.trakt_hdr = {
             'Content-Type': 'application/json',
@@ -34,17 +35,19 @@ class TraktAPI:
             'Authorization': f'Bearer {oauth_token}'
         }
 
+    # gets json response from the specified path for applicable media_type (show/movie)
     def get_trakt(self, path, args, media_type, timeout):
         time.sleep(1)
         try:
             response = self.traktSession.get(
                 f"https://api.trakt.tv/{path}", headers=self.trakt_hdr, timeout=timeout)
+            response.raise_for_status()
             if response.status_code != requests.codes.OK:
                 if response.status_code == 404:
                     return 404
                 print(
                     f"Trakt.tv Error: Unexpected status code return: {response.status_code}.")
-                exit(1)
+                # exit(1)
             else:
                 return response
         except requests.exceptions.ConnectTimeout as error:
@@ -55,27 +58,37 @@ class TraktAPI:
             print(f"{error}")
             exit(1)
         except requests.exceptions.HTTPError as error:
+            # checks if an oauth_refresh token is available - and if so assume that the token has expired and attempt a refresh automatically
             if '401' in str(error) or '400' in str(error) or '403' in str(error):
                 config = Configuration('config.conf')
+
+                # checks the config for the refresh, if exists, update the header and rerun the command and return original intended results
                 if config.conf.get('Trakt', 'oauth2_refresh') and self.oauth2_bearer == self.trakt_hdr.get("Authorization").split(" ")[1]:
                     print(
                         f"Error: You may have a expired oauth token. Attempting an automatic refresh command.")
+
+                    # refresh the header with the new auth, update the config file with new tokens
                     self.refresh_header(config.get_oauth(args, True))
                     time.sleep(1)
+
+                    # return the intended original results
                     return self.get_trakt(path, args, media_type, timeout=timeout)
+
+                # no oauth_refresh token is available, error out.
                 print(f"Error: You likely have a bad ClientID/Secret or expired/invalid token.\nPlease check your config and attempt the oauth command (-o) again")
                 exit(1)
 
+    # gets the specified trakt list and settings (account limits)
     def get_list(self, args, media_type):
         # grabs the users settings and sets the list limits
         response = self.get_trakt(
-            "users/settings", args, media_type, timeout=5)
+            "users/settings", args, media_type, timeout=10)
         self.list_limit = response.json().get('limits', {}).get(
             "list", {}).get('item_count', None)
 
         # sends a get request for the list and all of its items
         response = self.get_trakt(
-            f"users/{self.user}/lists/{self.list}/items", args, media_type, timeout=10)
+            f"users/{self.user}/lists/{self.list}/items", args, media_type, timeout=30)
 
         # returns empty lists if the list does not exist
         if response == 404:
@@ -105,22 +118,29 @@ class TraktAPI:
         # spit out the lists and json to main
         return response.json(), tvdb_ids, tmdb_ids, imdb_ids, trakt_ids
 
+    # sends a post command to trakt
+    # post_json is json.dumps'd json, path is the url to append to the user url
     def post_trakt(self, path, post_json, args, media_type, timeout):
         time.sleep(1)
         try:
             response = self.traktSession.post(
-                f"https://api.trakt.tv/users/{self.user}/{path}", headers=self.trakt_hdr, data=post_json, timeout=timeout)
+                f"https://api.trakt.tv/users/{self.user}/{path}", headers=self.trakt_hdr, data=post_json, timeout=timeout if not args.timeout else self.post_timeout)
             response.raise_for_status()
             if response.status_code == requests.codes.OK or response.status_code == 204 or response.status_code == 201:
                 return response
         except requests.exceptions.ConnectTimeout as error:
             print("Trakt.tv Error: Connection Timed Out. Check your internet.")
             exit(1)
+        except requests.exceptions.ReadTimeout as error:
+            print(
+                "Trakt.tv Error: Connection Timed Out Mid-Stream. Increase your --timeout. ")
+            exit(1)
         except requests.exceptions.ConnectionError as error:
             print("Trakt.tv: Connection Error. Check your internet.")
             print(f"{error}")
             exit(1)
         except requests.exceptions.HTTPError as error:
+            # http error parsing
             if '401' in str(error) or '403' in str(error):
                 print(f"Trakt.tv Error: You likely have a bad OAuth2 Token or ClientID/API key. Please revalidate with the oauth2 script, check your config and try again.")
                 exit(1)
@@ -138,14 +158,14 @@ class TraktAPI:
                     'privacy': self.list_privacy,
                     'allow_comments': False
                 }
-
+                # adds the list
                 self.post_trakt(
-                    f"lists", json.dumps(trakt_add_list), args, media_type, timeout=10)
+                    f"lists", json.dumps(trakt_add_list), args, media_type, timeout=15)
                 time.sleep(1)
 
-                response = self.post_trakt(
-                    path, post_json, args, media_type, timeout=timeout)
-                return response
+                # retry the POST and returns the intended original results
+                return self.post_trakt(
+                    path, post_json, args, media_type, timeout=timeout if not args.timeout else self.post_timeout)
 
     def add_to_list(self, args, media_type, arrData, trakt_ids, idtag, trakt_imdb_ids, arr_ids, arr_imdb, all_trakt_ids):
         trakt_del, trakt_add, extra_imdb_ids, extra_ids, filtered_extra_imdb_ids, wrong_ids = {
@@ -197,7 +217,8 @@ class TraktAPI:
                                     {"ids": {idtag: item}})
 
                                 # TODO - NEEDS refactoring. there's gotta be a better way to do this.
-                                # TODO - figure out how to escape/break the loops to proceed faster
+                                # TODO - figure out how to escape/break the loops to proceed faster?
+                                # TODO - maybe treat it like we do arr data in a dict
                                 # checks if the tmdb/tvdb is not in the arr's db and ends up determining if the id is wrong and it will be readded
                                 if (item not in arrData.keys()):
                                     # run through the json and check if the imdb id from trakt for the incorrect tvdb/tmdb is in arr
@@ -262,7 +283,7 @@ class TraktAPI:
 
             # sends the remove from list request
             response = self.post_trakt(
-                f'lists/{self.list}/items/remove', json.dumps(trakt_del), args, media_type, timeout=20)
+                f'lists/{self.list}/items/remove', json.dumps(trakt_del), args, media_type, timeout=60)
 
             # if not a wipe, display what was deleted...dont flood if wiping :P
             if not args.wipe:
@@ -306,7 +327,7 @@ class TraktAPI:
 
         # sends the add to list request
         response = self.post_trakt(
-            f'lists/{self.list}/items', json.dumps(trakt_add), args, media_type, timeout=20)
+            f'lists/{self.list}/items', json.dumps(trakt_add), args, media_type, timeout=60)
 
         # gets the count for the add results...
         added_items = response.json()['added'][media_type.lower()]

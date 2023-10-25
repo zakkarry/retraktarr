@@ -11,6 +11,7 @@ class ArrAPI:
             'Radarr': ('movie', 'tmdb', 'movies')
         }
 
+    # queries arr and gets the return from the end point passed to it
     def arr_get(self, arr, end_point):
         try:
             response = requests.get(
