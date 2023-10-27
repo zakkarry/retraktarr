@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+''' handles the arr api calls and requests '''
 import sys
 import requests
 

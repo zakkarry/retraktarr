@@ -1,11 +1,10 @@
-#!/usr/bin/env python3re"
+#!/usr/bin/env python3
+''' validation and config generation - pretty standard shit '''
 import sys
 import re
 import configparser
 import os
 import requests
-
-# validation and config generation - pretty standard shit
 
 
 class Configuration:

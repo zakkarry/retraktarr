@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+''' main script, arguments and executions '''
 import sys
 import argparse
 # import logging

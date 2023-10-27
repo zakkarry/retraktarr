@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+''' handles the trakt api lists and requests (add/delete/etc) '''
 import sys
 import time
 import json
@@ -48,7 +49,7 @@ class TraktAPI:
             response.raise_for_status()
             if response.status_code == 404:
                 return 404
-            elif response.status_code != 200:
+            if response.status_code != 200:
                 print(
                     f"Trakt.tv Error: Unexpected status code return: {response.status_code}.")
                 sys.exit(1)
@@ -356,15 +357,15 @@ class TraktAPI:
                             f"        {idtag.upper()}: "
                             f"{arr_data.get(extra_id, [None])[3]} - {extra_id}")
                         continue
-                    else:
-                        # if it can't grab the data from arr, it was deleted from the arr
-                        # it will search trakt's json (slower) for the titles
-                        for data in self.json:
-                            if data[media_type.rstrip('s')]["ids"][idtag] == extra_id:
-                                print(
-                                    f"        {idtag.upper()}: "
-                                    f"{data[media_type.rstrip('s')]['title']} - {extra_id}")
-                                break
+
+                    # if it can't grab the data from arr, it was deleted from the arr
+                    # it will search trakt's json (slower) for the titles
+                    for data in self.json:
+                        if data[media_type.rstrip('s')]["ids"][idtag] == extra_id:
+                            print(
+                                f"        {idtag.upper()}: "
+                                f"{data[media_type.rstrip('s')]['title']} - {extra_id}")
+                            break
 
                 # same as above, but for imdb, but missing tvdb/tmdb on trakt
                 # loops through filtered extra imdb's copy, removing as it finds matches,
