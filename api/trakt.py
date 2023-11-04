@@ -194,16 +194,13 @@ class TraktAPI:
                     timeout=timeout if not args.timeout else self.post_timeout)
                 return response
 
-    def add_to_list(self, args, media_type, arr_data, trakt_ids, idtag,
-                    trakt_imdb_ids, arr_ids, arr_imdb, all_trakt_ids):
-        ''' 
-        parse out and compares arr lists with trakt, then updates or adds to the list
+    def del_from_list(self, args, media_type, arr_data, trakt_ids, idtag,
+                      trakt_imdb_ids, arr_ids, arr_imdb, all_trakt_ids):
         '''
-
-        trakt_del, trakt_add, extra_imdb_ids, extra_ids, filtered_extra_imdb_ids, wrong_ids = {
-            media_type: []}, {}, [], [], [], []
-        needed_ids = set(arr_ids)  # assumes all tvdb/tmdb id's are necessary
-
+            super complicated logic to find and identify unneeded ids
+            and remove them from the trakt list before adding
+        '''
+        trakt_del, extra_imdb_ids, extra_ids, filtered_extra_imdb_ids, wrong_ids = [], [], [], [], []
         if not args.cat:  # not catenating to the list
 
             if len(all_trakt_ids) > 0:  # if the trakt list already has contents
@@ -224,29 +221,26 @@ class TraktAPI:
                     # same as above, but specifically imdbids in case tmdb/tvdb is missing
 
                     # run through trakt's API json response for the list
-                    for data in self.json:
-
-                        # check the type of media and compare to what arr's media is
-                        if data["type"] == media_type.rstrip('s'):
-
-                            # see if the idtag (tvdb/tmdb) is missing
-                            if data[media_type.rstrip('s')]["ids"].get(idtag) is None:
-
-                                # check if the imdb is present since tmdb/tvdb is not
-                                # see if its extra (needs to be removed)
-                                if (data[media_type.rstrip('s')]["ids"].get('imdb') in
-                                        extra_imdb_ids):
-
-                                    # add the imdb id from trakt to a filtered extra's list
-                                    filtered_extra_imdb_ids.append(
-                                        data[media_type.rstrip('s')]["ids"].get('imdb'))
+                    # check the type of media and compare to what arr's media is
+                    # see if the idtag (tvdb/tmdb) is missing
+                    # and add the imdb id from trakt to a filtered extra's list
+                    filtered_extra_imdb_ids = [data[media_type.rstrip(
+                        's')]["ids"].get('imdb') for data in filter(
+                        lambda data: data["type"] == media_type.rstrip('s') and
+                        data[media_type.rstrip('s')]["ids"].get(idtag) is None and
+                        data[media_type.rstrip('s')]["ids"].get(
+                            'imdb') in extra_imdb_ids,
+                        self.json
+                    )]
 
                     # check if there are extra tmdb/tvdb id's to be removed from trakt
                     # skip if wipe since we'd remove all
                     if len(extra_ids) > 0 and not args.wipe:
                         trakt_del = {
                             media_type: []}
-
+                        # create a dictionary for 'imdb' values in arr_data that could be wrong
+                        arr_imdb_lookup = {
+                            value[1][0]: value[0] for value in arr_data.items() if value[0] in needed_ids}
                         # run through extra_ids
                         # check if the extra_id from trakt doesnt exist in arrs
                         # (almost always deleted/outdate trakt info)
@@ -257,30 +251,19 @@ class TraktAPI:
                                 trakt_del[media_type].append(
                                     {"ids": {idtag: item}})
 
-                                # TODO - NEEDS refactoring
-                                # TODO - there's gotta be a better way to do this.
-                                # TODO - figure out how to escape/break the loops to proceed faster?
-                                # TODO - maybe treat it like we do arr data in a dict
                                 # checks if the tmdb/tvdb is not in the arr's db
                                 # ends up determining if the id is wrong and it will be readded
                                 if item not in arr_data.keys():
-                                    # run through the json
-                                    # checks if the imdbid from trakt is in arr
-                                    for data in self.json:
-                                        # if the tvdb/tmdb id is in the arr
-                                        if (data[media_type.rstrip('s')]["ids"].get(idtag) ==
-                                                item):
-                                            # run through the arr's id dict
-                                            for value in arr_data.items():
-                                                # if the imdb id is correct but tmdb/tvdb is not
-                                                if (data[media_type.rstrip('s')]["ids"].get(
-                                                    'imdb') ==
-                                                        value[1][0]) and (value[0] in needed_ids):
-                                                    # if the tmdb/tvdb is going to be readded
-                                                    # its a wrong id on trakt, and will be readded
-                                                    wrong_ids.append(item)
-                                                    break
 
+                                    # run through the json
+                                    for data in self.json:
+                                        # check if the tvdb/tmdb id is in the arr
+                                        if (data[media_type.rstrip(
+                                                's')]["ids"].get(idtag) == item) and (data[media_type.rstrip(
+                                                    's')]["ids"].get('imdb') in arr_imdb_lookup):
+                                            # if the imdb id is correct but tmdb/tvdb is not, add to wrong_ids
+                                            wrong_ids.append(item)
+                                            break
                     # remove the needed wrong ids from extra_ids so they dont delete
                     extra_ids = set(extra_ids) - set(wrong_ids)
 
@@ -315,21 +298,13 @@ class TraktAPI:
 
         # does some calculations on what the end list count would be
         # compares to your trakt list limits
-        if (((len(self.list_len) + len(needed_ids) - len(extra_ids) - len(extra_imdb_ids)) >
+        if (((len(self.list_len) + len(needed_ids) - len(extra_ids) - len(filtered_extra_imdb_ids)) >
              self.list_limit) or
-                ((args.wipe) and (len(needed_ids) > self.list_limit))):
+                (args.wipe and (len(needed_ids) > self.list_limit))):
             print(
                 f"Error: Your additions to ({self.list}) exceeds your item limits."
                 "You will need Trakt VIP.")
             sys.exit(1)
-
-        # build the add to list json, if imdb is not available just use tmdb/tvdb
-        trakt_add = {
-            media_type: [{"ids": {idtag: item, "imdb": arr_data.get(item, [None])[0]}}
-                         if arr_data.get(item, [None])[0] is not None
-                         else {"ids":  {idtag: item}}
-                         for item in needed_ids]
-        }
 
         # checks if there are extra ids to be removed
         # or list has items and a wipe was requested
@@ -338,7 +313,7 @@ class TraktAPI:
                 (args.wipe and (len(all_trakt_ids) > 0))):
 
             # sends the remove from list request
-            response = self.post_trakt(
+            self.post_trakt(
                 f'lists/{self.list}/items/remove', json.dumps(trakt_del),
                 args, media_type, timeout=60)
 
@@ -361,17 +336,18 @@ class TraktAPI:
                     # if it can't grab the data from arr, it was deleted from the arr
                     # it will search trakt's json (slower) for the titles
                     for data in self.json:
-                        if data[media_type.rstrip('s')]["ids"][idtag] == extra_id:
+                        if data[media_type.rstrip('s')]["ids"].get(idtag) == extra_id:
                             print(
                                 f"        {idtag.upper()}: "
-                                f"{data[media_type.rstrip('s')]['title']} - {extra_id}")
+                                f"{data[media_type.rstrip('s')].get('title')} - {extra_id}")
                             break
 
                 # same as above, but for imdb, but missing tvdb/tmdb on trakt
                 # loops through filtered extra imdb's copy, removing as it finds matches,
                 # so it doesnt double display since the data might be in both arr and trakt
+                arr_data_items = arr_data.items()
                 for item in filtered_extra_imdb_ids.copy():
-                    for value in arr_data.items():
+                    for value in arr_data_items:
                         if item == value[1][0]:
                             print(
                                 f"        IMDB: {value[1][3]} - {value[1][0]}")
@@ -383,11 +359,30 @@ class TraktAPI:
                                 's')]["ids"].get('imdb')
                             if imdbid == item:
                                 print(
-                                    f"        IMDB: {data[media_type.rstrip('s')]['title']}"
+                                    f"        IMDB: {data[media_type.rstrip('s')].get('title')}"
                                     f" - {imdbid}"
                                 )
                                 break
+        return needed_ids
 
+    def add_to_list(self, args, media_type, arr_data, trakt_ids, idtag,
+                    trakt_imdb_ids, arr_ids, arr_imdb, all_trakt_ids):
+        ''' 
+        parse out and compares arr lists with trakt, then runs 
+        del_from_list and updates/adds to the list
+        '''
+
+        trakt_add = {media_type: []}
+        needed_ids = self.del_from_list(args, media_type, arr_data, trakt_ids, idtag,
+                                        trakt_imdb_ids, arr_ids, arr_imdb, all_trakt_ids)
+
+        # build the add to list json, if imdb is not available just use tmdb/tvdb
+        trakt_add = {
+            media_type: [{"ids": {idtag: item, "imdb": arr_data.get(item, [None])[0]}}
+                         if arr_data.get(item, [None])[0] is not None
+                         else {"ids":  {idtag: item}}
+                         for item in needed_ids]
+        }
         # sends the add to list request
         response = self.post_trakt(
             f'lists/{self.list}/items', json.dumps(trakt_add), args, media_type, timeout=60)
