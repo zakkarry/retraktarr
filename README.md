@@ -17,6 +17,7 @@ This use case was admittedly very narrow, and a few more use cases have emerged 
 - Backing up entire Radarr/Sonarr libraries, including movies/shows you do not already have downloaded. For example, if it's missing in Radarr, PlexTraktSync would not help.
 - Restoring your library easily by importing an entire (backed up) list (in the case of migrating OSs or catastrophic failures)
 - Giving someone the ability to browse media you have (without giving them access to Plex/Jellyfin/Emby)
+- Sync multiple instances of Sonarr/Radarr
 - _Possibly more I have not considered..._
 
 ## Requirements
@@ -58,27 +59,32 @@ If you've never run `reTraktarr` before, you will need to leave your `oauth2_tok
 ## Usage (CLI)
 
 ```shell
-usage: retraktarr.py [-h] [-oauth OAUTH] [-radarr] [-sonarr] [-all] [-mon] [-qualityprofile QUALITYPROFILE] [-tag TAG] [-cat] [-list LIST] [-wipe] [-privacy PRIVACY] [-refresh]
+usage: retraktarr.py [-h] [--oauth OAUTH] [--radarr] [--sonarr] [--all] [--mon] [--qualityprofile QUALITYPROFILE]
+                     [--tag TAG] [--cat] [--list LIST] [--wipe] [--privacy PRIVACY] [--refresh] [--timeout TIMEOUT]
 
 Starr App -> Trakt.tv List Backup/Synchronization
 
 options:
   -h, --help            show this help message and exit
-  -oauth OAUTH, -o OAUTH
-                        Update OAuth2 Bearer Token. Accepts the auth code and requires valid Trakt config settings. (ex: -o CODE_HERE)
-  -radarr, -r           Synchronize monitored Radarr movies with Trakt.tv
-  -sonarr, -s           Synchronize monitored Sonarr series with Trakt.tv
-  -all, -a              Synchronize both Starr apps with Trakt.tv
-  -mon, -m              Synchronize only monitored content with Trakt.tv
-  -qualityprofile QUALITYPROFILE, -qp QUALITYPROFILE
+  --oauth OAUTH, -o OAUTH
+                        Update OAuth2 Bearer Token. Accepts the auth code and requires
+                        valid Trakt config settings
+                        (ex: -o CODE_HERE)
+  --radarr, -r          Synchronize monitored Radarr movies with Trakt.tv
+  --sonarr, -s          Synchronize monitored Sonarr series with Trakt.tv
+  --all, -all, -a       Synchronize both Starr apps with Trakt.tv
+  --mon, -m             Synchronize only monitored content with Trakt.tv
+  --qualityprofile QUALITYPROFILE, -qp QUALITYPROFILE
                         The quality profile you wish to sync to Trakt.tv
-  -tag TAG, -t TAG      The arr tag you wish to sync to Trakt.tv
-  -cat, -c              Add to the Trakt.tv list without deletion (concatenate/append to list)
-  -list LIST, -l LIST   Specifies the Trakt.tv list name. (overrides config file settings)
-  -wipe, -w             Erases the associated list and performs a sync (requires -all or -r/s)
-  -privacy PRIVACY, -p PRIVACY
-                        Specifies the Trakt.tv list privacy settings (private/friends/public - overrides config file settings)
-  -refresh              Forces a refresh_token exchange (oauth) and sets the config to a new tokens.
+  --tag TAG, -t TAG     The arr tag you wish to sync to Trakt.tv
+  --cat, -c             Add to the Trakt.tv list without deletion (concatenate/append to list)
+  --list LIST, -l LIST  Specifies the Trakt.tv list name. (overrides config file settings)
+  --wipe, -w            Erases the associated list and performs a sync (requires -all or -r/s)
+  --privacy PRIVACY, -p PRIVACY
+                        Specifies the Trakt.tv list privacy settings
+                        (private/friends/public - overrides config file settings)
+  --refresh             Forces a refresh_token exchange (oauth) and sets the config to a new tokens.
+  --timeout TIMEOUT     Specifies the timeout in seconds to use for POST commands to Trakt.tv
 ```
 
 ## Troubleshooting

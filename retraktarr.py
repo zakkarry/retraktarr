@@ -21,7 +21,7 @@ def main():
                         help='Synchronize monitored Radarr movies with Trakt.tv')
     parser.add_argument('--sonarr', '-s', action='store_true',
                         help='Synchronize monitored Sonarr series with Trakt.tv')
-    parser.add_argument('--all', '-a', action='store_true',
+    parser.add_argument('--all', '-all', '-a', action='store_true',
                         help='Synchronize both Starr apps with Trakt.tv')
     parser.add_argument('--mon', '-m', action='store_true',
                         help='Synchronize only monitored content with Trakt.tv')

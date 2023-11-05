@@ -47,8 +47,6 @@ class TraktAPI:
             response = self.trakt_session.get(
                 f"https://api.trakt.tv/{path}", headers=self.trakt_hdr, timeout=timeout)
             response.raise_for_status()
-            if response.status_code == 404:
-                return 404
             if response.status_code != 200:
                 print(
                     f"Trakt.tv Error: Unexpected status code return: {response.status_code}.")
@@ -63,6 +61,9 @@ class TraktAPI:
             print(f"{error}")
             sys.exit(1)
         except requests.exceptions.HTTPError as error:
+            # checks if the list is missing mostly
+            if '404' in str(error):
+                return 404
             # checks if an oauth_refresh token is available
             # and if so assume that the token has expired and attempt a refresh automatically
             if '401' in str(error) or '400' in str(error) or '403' in str(error):
@@ -175,7 +176,7 @@ class TraktAPI:
                 print(
                     "Trakt.tv Error (404): "
                     f"https://trakt.tv/users/{self.user}/lists/{self.list} not found...\n"
-                    "Creating {self.list_privacy} trakt.tv list: ({self.list})...\n")
+                    f'Creating {self.list_privacy} trakt.tv list: ({self.list})...\n')
                 trakt_add_list = {
                     'name': self.list,
                     'description': 'Created using reTraktarr '
@@ -295,6 +296,8 @@ class TraktAPI:
                         "movies": [{"ids": {'trakt': item}}
                                    for item in all_trakt_ids]
                     }
+            else:
+                needed_ids = set(arr_ids)
 
         # does some calculations on what the end list count would be
         # compares to your trakt list limits
