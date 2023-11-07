@@ -160,8 +160,8 @@ class TraktAPI:
         except requests.exceptions.HTTPError as error:
             # http error parsing
             if '401' in str(error) or '403' in str(error):
-                print("Trakt.tv Error: You likely have a bad OAuth2 Token or ClientID/API key."
-                      "Please revalidate with the oauth2 script, check your config and try again.")
+                print("Trakt.tv Error: You likely have a bad OAuth2 Token, username, or ClientID/API key.\n"
+                      "Please check your config, revalidate with the oauth2 command, and try again.")
                 sys.exit(1)
             elif '420' in str(error):
                 print(
@@ -175,8 +175,7 @@ class TraktAPI:
                 # return the response as if nothing happened :)
                 print(
                     "Trakt.tv Error (404): "
-                    f"https://trakt.tv/users/{self.user}/lists/{self.list} not found...\n"
-                    f'Creating {self.list_privacy} trakt.tv list: ({self.list})...\n')
+                    f"https://trakt.tv/users/{self.user}/lists/{self.list} not found...\n")
                 trakt_add_list = {
                     'name': self.list,
                     'description': 'Created using reTraktarr '
@@ -187,6 +186,8 @@ class TraktAPI:
                 # adds the list
                 self.post_trakt(
                     "lists", json.dumps(trakt_add_list), args, media_type, timeout=15)
+                print(
+                    f'Creating {self.list_privacy} Trakt.tv list: ({self.list})...\n')
                 time.sleep(1)
 
                 # retry the POST and returns the intended original results

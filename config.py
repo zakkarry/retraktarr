@@ -135,7 +135,10 @@ class Configuration:
             print(
                 f'Error occurred while reading the configuration values: {error}')
             sys.exit(1)
-
+        if (len(user) == 0):
+            print('Error: Invalid configuration values. '
+                  '[Trakt] username should not be empty.')
+            sys.exit(1)
         # validate the lengths of all the keys are correct
         if len(oauth2_bearer) != 64 or len(trakt_api_key) != 64 or len(trakt_secret) != 64:
             print(

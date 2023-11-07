@@ -18,9 +18,9 @@ def main():
                         ' Accepts the auth code and requires valid Trakt '
                         'config settings (ex: -o CODE_HERE)')
     parser.add_argument('--radarr', '-r', action='store_true',
-                        help='Synchronize monitored Radarr movies with Trakt.tv')
+                        help='Synchronize Radarr movies with Trakt.tv')
     parser.add_argument('--sonarr', '-s', action='store_true',
-                        help='Synchronize monitored Sonarr series with Trakt.tv')
+                        help='Synchronize Sonarr series with Trakt.tv')
     parser.add_argument('--all', '-all', '-a', action='store_true',
                         help='Synchronize both Starr apps with Trakt.tv')
     parser.add_argument('--mon', '-m', action='store_true',
