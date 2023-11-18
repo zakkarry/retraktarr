@@ -8,6 +8,8 @@ from api.arr import ArrAPI
 from api.trakt import TraktAPI
 from config import Configuration
 
+VERSION = "1.1.0"
+
 
 def main():
     """main entry point defines args and processes stuff"""
@@ -95,7 +97,16 @@ def main():
         type=str,
         help="Specifies the timeout in seconds to use for " "POST commands to Trakt.tv",
     )
+    parser.add_argument(
+        "--version",
+        action="store_true",
+        help="Displays version information",
+    )
     args = parser.parse_args()
+
+    if args.version:
+        print(f"reTraktarr v{VERSION}")
+        exit(0)
 
     config = Configuration("config.conf")
     if args.oauth:
