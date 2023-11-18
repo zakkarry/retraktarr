@@ -2,13 +2,19 @@
 """ main script, arguments and executions """
 import sys
 import argparse
+from os import path
 
-# import logging
 from api.arr import ArrAPI
 from api.trakt import TraktAPI
 from config import Configuration
 
-VERSION = "1.1.0"
+try:
+    with open(
+        path.join(path.dirname(path.abspath(__file__)), "VERSION"), encoding="utf-8"
+    ) as f:
+        VERSION = f.read()
+except Exception:
+    VERSION = "MISSING"
 
 
 def main():
@@ -99,6 +105,7 @@ def main():
     )
     parser.add_argument(
         "--version",
+        "-v",
         action="store_true",
         help="Displays version information",
     )
