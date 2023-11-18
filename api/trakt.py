@@ -185,8 +185,10 @@ class TraktAPI:
             # http error parsing
             if "401" in str(error) or "403" in str(error):
                 print(
-                    "Trakt.tv Error: You likely have a bad OAuth2 Token, username, or ClientID/API key.\n"
-                    "Please check your config, revalidate with the oauth2 command, and try again."
+                    "Trakt.tv Error: You likely have a bad OAuth2 Token, "
+                    "username, or ClientID/API key.\n"
+                    "Please check your config, revalidate with the oauth2 "
+                    "command, and try again."
                 )
                 sys.exit(1)
             elif "420" in str(error):
@@ -334,6 +336,7 @@ class TraktAPI:
                         else:
                             for item in filtered_extra_imdb_ids:
                                 trakt_del[media_type].append({"ids": {"imdb": item}})
+
                 # if filtered is less is 0 or wipe, set needed_ids to all
                 # build a json to delete everything (in case of wipe)
                 # we wont run delete if the list is empty anyway...

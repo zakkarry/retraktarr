@@ -1,0 +1,10 @@
+"documentation":
+  - "README.md"
+"config":
+  - "config.py"
+"*arr":
+  - "api/arr.py"
+"trakt":
+  - "api/trakt.py"
+"base":
+  - "retraktarr.py"

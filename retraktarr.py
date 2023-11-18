@@ -13,7 +13,7 @@ try:
         path.join(path.dirname(path.abspath(__file__)), "VERSION"), encoding="utf-8"
     ) as f:
         VERSION = f.read()
-except Exception:
+except OSError as e:
     VERSION = "MISSING"
 
 
@@ -113,7 +113,7 @@ def main():
 
     if args.version:
         print(f"reTraktarr v{VERSION}")
-        exit(0)
+        sys.exit(0)
 
     config = Configuration("config.conf")
     if args.oauth:

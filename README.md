@@ -1,10 +1,10 @@
-# reTraktarr
+# retraktarr
 
-`reTraktarr` is a "reverse" [Trakt.tv](https://www.trakt.tv) list implementation for [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) that creates [Trakt.tv](https://www.trakt.tv) lists for your movies/series using APIs.
+`retraktarr` is a "reverse" [Trakt.tv](https://www.trakt.tv) list implementation for [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) that creates [Trakt.tv](https://www.trakt.tv) lists for your movies/series using APIs.
 
 ## Introduction
 
-`reTraktarr` is a Python script to sync your [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) library to a [Trakt.tv](https://www.trakt.tv) lists using the respective APIs.
+`retraktarr` is a Python script to sync your [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) library to a [Trakt.tv](https://www.trakt.tv) lists using the respective APIs.
 
 The original idea stemmed from my wanting to have a list of monitored movies I could share with friends. This was to be the equivalent of a mdblist, but cherry-picked. Providing a more curated list of what **I** believed was worth considering to watch for downloading.
 
@@ -29,9 +29,9 @@ This use case was admittedly very narrow, and a few more use cases have emerged 
 
 ## Arr Support
 
-`reTraktarr` supports both [Radarr](https://radarr.video) and [Sonarr](https://sonarr.tv) in sourcing the media to sync to your lists. You can specify either or both for syncing, as well as filter what should be added with CLI arguments.
+`retraktarr` supports both [Radarr](https://radarr.video) and [Sonarr](https://sonarr.tv) in sourcing the media to sync to your lists. You can specify either or both for syncing, as well as filter what should be added with CLI arguments.
 
-`reTraktarr` will need API access to whichever Arr(s) you intend to use.
+`retraktarr` will need API access to whichever Arr(s) you intend to use.
 
 ## [Trakt.tv](https://www.trakt.tv) API App Setup
 
@@ -44,17 +44,17 @@ A [Trakt.tv](https://www.trakt.tv) account with an [API set up](#trakttv-api-app
    - I suggest using `https://google.com` for your redirect URI. We will need to steal a parameter from the redirect to complete the OAuth2 process.
 3. After creating the application, click on it and you will see your `Client ID`, `Client Secret`, and an `Authorize` button.
 4. Click `Authorize`. Click `Yes`. You will be redirected to Google (or your URI) and in the URL bar you will see `?code=` followed by 64 alphanumeric characters. **Save this for now. This is your OAuth2 Authorization code.**
-5. You can now complete the OAuth2 process when you're ready using the `reTraktarr` script.
+5. You can now complete the OAuth2 process when you're ready using the `retraktarr` script.
 
-## Configuring reTraktarr
+## Configuring retraktarr
 
-`reTraktarr` uses a config file, named `config.conf` to get many of its settings. However, some of these can be overridden with the arguments you pass. You can run `python3 retraktarr.py` at any time to see the available options.
+`retraktarr` uses a config file, named `config.conf` to get many of its settings. However, some of these can be overridden with the arguments you pass. You can run `python3 retraktarr.py` at any time to see the available options.
 
 To generate the config template, simply run `python3 retraktarr.py` in a directory without a `config.conf` file present.
 
 Open in your favorite text editor and complete the necessary details for your usage.
 
-If you've never run `reTraktarr` before, you will need to leave your `oauth2_token` and `oauth2_refresh` options blank and use the -oauth argument to complete the authorization process and automatically save your tokens. They will be automatically refreshed if a valid refresh token is available upon expiration.
+If you've never run `retraktarr` before, you will need to leave your `oauth2_token` and `oauth2_refresh` options blank and use the -oauth argument to complete the authorization process and automatically save your tokens. They will be automatically refreshed if a valid refresh token is available upon expiration.
 
 ## Usage (CLI)
 
@@ -98,6 +98,6 @@ options:
 - If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
 - If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until you're list is processed completely.
 
-[start a discussion](https://github.com/zakkarry/reTraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/reTraktarr/issues/new)
+[start a discussion](https://github.com/zakkarry/retraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/retraktarr/issues/new)
 
 [support me with a coffee](https://www.buymeacoffee.com/zak.ary)

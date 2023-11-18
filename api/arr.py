@@ -79,7 +79,7 @@ class ArrAPI:
 
         # if its monitored, add to arr ids
         if args.mon:
-            arr_ids = [item for item in arr_data if arr_data[item][1]]
+            arr_ids = [key for key, value in arr_data.items() if value[1]]
 
         # get the current filtered arr_ids that qualify for the specified quality profile
         if args.qualityprofile:

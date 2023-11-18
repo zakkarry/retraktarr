@@ -6,7 +6,7 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Upload Package to PyPi
+name: Packaging Build for PyPi
 
 on:
   workflow_dispatch:
