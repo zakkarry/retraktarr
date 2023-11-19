@@ -6,7 +6,7 @@ from os import path
 
 from api.arr import ArrAPI
 from api.trakt import TraktAPI
-from config import Configuration
+from config.config import Configuration
 
 try:
     with open(
@@ -185,4 +185,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    retraktarr()
