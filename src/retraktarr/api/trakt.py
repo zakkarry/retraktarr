@@ -4,7 +4,7 @@ import sys
 import time
 import json
 import requests
-from config import Configuration
+from retraktarr.config import Configuration
 
 
 class TraktAPI:

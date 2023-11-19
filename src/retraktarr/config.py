@@ -12,9 +12,10 @@ class Configuration:
 
     def __init__(self, config_file):
         self.conf = configparser.ConfigParser()
+        self.config_file = config_file
         if not os.path.exists(config_file):
             print(
-                "Error: Configuration file 'config.conf' not found. Creating blank config."
+                f"Error: Configuration file '{config_file}' not found. Creating blank config."
             )
             try:
                 self.conf["Trakt"] = {
@@ -47,7 +48,7 @@ class Configuration:
             sys.exit(1)
         else:
             try:
-                self.conf.read("config.conf")
+                self.conf.read(config_file)
             except configparser.Error as error:
                 print(f"Error occurred while reading the configuration file: {error}")
                 sys.exit(1)
@@ -116,7 +117,7 @@ class Configuration:
             self.conf.set(
                 "Trakt", "oauth2_refresh", response.json().get("refresh_token")
             )
-            with open("config.conf", "w", encoding="utf-8") as configfile:
+            with open(self.config_file, "w", encoding="utf-8") as configfile:
                 self.conf.write(configfile)
                 print(
                     "Your configuration file was successfully updated "
