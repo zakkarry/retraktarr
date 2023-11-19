@@ -32,6 +32,7 @@ setup(
     version=VERSION_NO,
     # Short description of your library
     description=("a simple Arr -> Trakt.tv list sync script"),
+    entry_points={"console_scripts": ["retraktarr = retraktarr:main"]},
     # Long description of your library
     install_requires="requests",
     long_description=LONG_DESCRIPTION,
@@ -41,12 +42,12 @@ setup(
     # Your name
     author="zakkarry",
     # Your email
-    author_email="",
+    author_email="zak@ary.dev",
     # Either the link to your github or to your website
     url="https://github.com/zakkarry",
     # Link from which the project can be downloaded
     download_url="https://github.com/zakkarry/retraktarr",
-    packages=find_packages("."),
-    package_dir={"": "."},
+    packages=find_packages("src/*"),
+    package_data={"": ["src/*"]},
     include_package_data=True,
 )
