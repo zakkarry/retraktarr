@@ -2,11 +2,12 @@
 """ main script, arguments and executions """
 import sys
 import argparse
-from os import path
+from os import name, path, getenv
 
-from api.arr import ArrAPI
-from api.trakt import TraktAPI
-from config.config import Configuration
+from retraktarr.api.arr import ArrAPI
+from retraktarr.api.trakt import TraktAPI
+from retraktarr.config import Configuration
+
 
 try:
     with open(
@@ -16,9 +17,18 @@ try:
 except OSError as e:
     VERSION = "MISSING"
 
+config_path = f'{path.expanduser("~")}{path.sep}.config{path.sep}retraktarr.conf'
+
 
 def main():
     """main entry point defines args and processes stuff"""
+    try:
+        with open(
+            path.join(path.dirname(path.abspath(__file__)), "VERSION"), encoding="utf-8"
+        ) as f:
+            VERSION = f.read()
+    except OSError as e:
+        VERSION = "MISSING"
 
     parser = argparse.ArgumentParser(
         description="Starr App -> Trakt.tv List Backup/Synchronization"
@@ -109,13 +119,24 @@ def main():
         action="store_true",
         help="Displays version information",
     )
+    parser.add_argument(
+        "--config",
+        type=str,
+        help="Specifies configuration file",
+    )
     args = parser.parse_args()
 
     if args.version:
         print(f"reTraktarr v{VERSION}")
         sys.exit(0)
+    if args.config:
+        config_path = args.config
+    else:
+        config_path = (
+            f'{path.expanduser("~")}{path.sep}.config{path.sep}retraktarr.conf'
+        )
 
-    config = Configuration("config.conf")
+    config = Configuration(config_path)
     if args.oauth:
         config.get_oauth(args)
     if args.refresh:
@@ -185,4 +206,4 @@ def main():
 
 
 if __name__ == "__main__":
-    retraktarr()
+    main()
