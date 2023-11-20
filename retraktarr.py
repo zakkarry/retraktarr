@@ -115,9 +115,8 @@ def main():
     )
     parser.add_argument(
         "--version",
-        "-v",
         action="store_true",
-        help="Displays version information",
+        help="Displays current version information",
     )
     parser.add_argument(
         "--config",
@@ -135,7 +134,7 @@ def main():
         config_path = (
             f'{path.expanduser("~")}{path.sep}.config{path.sep}retraktarr.conf'
         )
-
+    print(config_path)
     config = Configuration(config_path)
     if args.oauth:
         config.get_oauth(args)

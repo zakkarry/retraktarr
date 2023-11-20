@@ -46,6 +46,10 @@ A [Trakt.tv](https://www.trakt.tv) account with an [API set up](#trakttv-api-app
 4. Click `Authorize`. Click `Yes`. You will be redirected to Google (or your URI) and in the URL bar you will see `?code=` followed by 64 alphanumeric characters. **Save this for now. This is your OAuth2 Authorization code.**
 5. You can now complete the OAuth2 process when you're ready using the `retraktarr` script.
 
+## Installing retraktarr
+
+You can either download the source yourself or install from PyPI using the `pip install retraktarr` command.
+
 ## Configuring retraktarr
 
 `retraktarr` uses a config file, named `config.conf` to get many of its settings. However, some of these can be overridden with the arguments you pass. You can run `python3 retraktarr.py` at any time to see the available options.
@@ -59,19 +63,13 @@ If you've never run `retraktarr` before, you will need to leave your `oauth2_tok
 ## Usage (CLI)
 
 ```shell
-usage: retraktarr.py [-h] [--oauth OAUTH] [--radarr] [--sonarr] [--all] [--mon] [--qualityprofile QUALITYPROFILE]
-                     [--tag TAG] [--cat] [--list LIST] [--wipe] [--privacy PRIVACY] [--refresh] [--timeout TIMEOUT]
-
-Starr App -> Trakt.tv List Backup/Synchronization
-
 options:
   -h, --help            show this help message and exit
   --oauth OAUTH, -o OAUTH
-                        Update OAuth2 Bearer Token. Accepts the auth code and requires
-                        valid Trakt config settings
+                        Update OAuth2 Bearer Token. Accepts the auth code and requires valid Trakt config settings
                         (ex: -o CODE_HERE)
-  --radarr, -r          Synchronize monitored Radarr movies with Trakt.tv
-  --sonarr, -s          Synchronize monitored Sonarr series with Trakt.tv
+  --radarr, -r          Synchronize Radarr movies with Trakt.tv
+  --sonarr, -s          Synchronize Sonarr series with Trakt.tv
   --all, -all, -a       Synchronize both Starr apps with Trakt.tv
   --mon, -m             Synchronize only monitored content with Trakt.tv
   --qualityprofile QUALITYPROFILE, -qp QUALITYPROFILE
@@ -81,10 +79,12 @@ options:
   --list LIST, -l LIST  Specifies the Trakt.tv list name. (overrides config file settings)
   --wipe, -w            Erases the associated list and performs a sync (requires -all or -r/s)
   --privacy PRIVACY, -p PRIVACY
-                        Specifies the Trakt.tv list privacy settings
-                        (private/friends/public - overrides config file settings)
+                        Specifies the Trakt.tv list privacy settings (private/friends/public - overrides config file
+                        settings)
   --refresh             Forces a refresh_token exchange (oauth) and sets the config to a new tokens.
   --timeout TIMEOUT     Specifies the timeout in seconds to use for POST commands to Trakt.tv
+  --version             Displays version information
+  --config CONFIG       Specifies configuration file
 ```
 
 ## Troubleshooting
@@ -100,4 +100,4 @@ options:
 
 [start a discussion](https://github.com/zakkarry/retraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/retraktarr/issues/new)
 
-[support me with a coffee](https://www.buymeacoffee.com/zak.ary)
+[support me with a coffee](https://tip.ary.dev)
