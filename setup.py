@@ -1,7 +1,6 @@
 import os
 
-from distutils.core import setup
-from setuptools import find_packages
+from setuptools import setup, find_packages
 
 """
 setup file for package publishing
@@ -32,7 +31,7 @@ setup(
     version=VERSION_NO,
     # Short description of your library
     description=("a simple Arr -> Trakt.tv list sync script"),
-    entry_points={"console_scripts": ["retraktarr = retraktarr.retraktarr:main"]},
+    entry_points={"console_scripts": ["retraktarr = retraktarr:main"]},
     # Long description of your library
     install_requires="requests",
     long_description=LONG_DESCRIPTION,
@@ -48,6 +47,6 @@ setup(
     # Link from which the project can be downloaded
     download_url="https://github.com/zakkarry/retraktarr",
     packages=["retraktarr", "retraktarr.api"],
-    package_dir={"retraktarr": "src/retraktarr"},
-    include_package_data=True,
+    package_dir={"retraktarr": "."},
+    exclude_package_data={"": ["*.conf"]},
 )
