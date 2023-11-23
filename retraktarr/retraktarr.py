@@ -116,9 +116,8 @@ def main():
         help="If a path is provided, retraktarr will use this config file, otherwise it outputs default config location.",
     )
     args = parser.parse_args()
-
+    print(f"\nretraktarr v{VERSION}")
     if args.version:
-        print(f"reTraktarr v{VERSION}")
         sys.exit(0)
 
     if args.config is not True and args.config is not None:
@@ -131,6 +130,7 @@ def main():
             print(f"Current default config file is {config_path}")
             exit(0)
 
+    print(f"Validating Configuration File: {config_path}\n")
     config = Configuration(config_path)
     if args.oauth:
         config.get_oauth(args)
@@ -159,6 +159,8 @@ def main():
             args, arr_api.endpoint["Radarr"][0]
         )
         arr_ids, arr_imdb, arr_data = arr_api.get_list(args, "Radarr")
+
+        print("[Radarr]")
         trakt_api.add_to_list(
             args,
             arr_api.endpoint["Radarr"][2],
@@ -174,12 +176,12 @@ def main():
 
     if args.sonarr or args.all:
         config.validate_arr_configuration(arr_api, trakt_api, "Sonarr", args)
-
         tvdb_ids, tmdb_ids, imdb_ids, trakt_ids = trakt_api.get_list(
             args, arr_api.endpoint["Sonarr"][2].rstrip("s")
         )
 
         arr_ids, arr_imdb, arr_data = arr_api.get_list(args, "Sonarr")
+        print("[Sonarr]")
         trakt_api.add_to_list(
             args,
             arr_api.endpoint["Sonarr"][2],
