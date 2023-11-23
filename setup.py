@@ -20,27 +20,9 @@ try:
 except OSError as e:
     VERSION_NO = ""
 
-def read(*paths, **kwargs):
-    """Read the contents of a text file safely.
-    >>> read("README.md")
-    ...
-    """
 
-    content = ""
-    with io.open(
-        os.path.join(os.path.dirname(__file__), *paths),
-        encoding=kwargs.get("encoding", "utf8"),
-    ) as open_file:
-        content = open_file.read().strip()
-    return content
-
-
-def read_requirements(path):
-    return [
-        line.strip()
-        for line in read(path).split("\n")
-        if not line.startswith(('"', "#", "-", "git+"))
-    ]
+with open('requirements.txt') as reqs_file:
+    requirements = reqs_file.read().splitlines()
 
 setup(
     # Name of the package
@@ -58,7 +40,7 @@ setup(
         "console_scripts": ["retraktarr = retraktarr:main"]
     },
     # Long description of your library
-    install_requires=read_requirements("requirements.txt"),
+    install_requires=requirements,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     # long_description=long_description,
