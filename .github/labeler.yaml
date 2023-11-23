@@ -1,10 +1,10 @@
 "documentation":
     - "README.md"
 "config":
-    - "config.py"
+    - "retraktarr/config.py"
 "*arr":
-    - "api/arr.py"
+    - "retraktarr/api/arr.py"
 "trakt":
-    - "api/trakt.py"
+    - "retraktarr/api/trakt.py"
 "base":
-    - "retraktarr.py"
+    - "retraktarr/retraktarr.py"
