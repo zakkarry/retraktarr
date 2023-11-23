@@ -14,10 +14,17 @@ except OSError as e:
     LONG_DESCRIPTION = ""
 
 try:
-    with open(os.path.join(current_directory, "VERSION"), encoding="utf-8") as f:
+    with open(
+        os.path.join(current_directory, f"retraktarr{os.path.sep}VERSION"),
+        encoding="utf-8",
+    ) as f:
         VERSION_NO = f.read()
 except OSError as e:
     VERSION_NO = ""
+
+
+with open("requirements.txt") as reqs_file:
+    requirements = reqs_file.read().splitlines()
 
 setup(
     # Name of the package
@@ -33,7 +40,7 @@ setup(
     description=("a simple Arr -> Trakt.tv list sync script"),
     entry_points={"console_scripts": ["retraktarr = retraktarr:main"]},
     # Long description of your library
-    install_requires="requests",
+    install_requires=requirements,
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
     # long_description=long_description,
@@ -46,7 +53,6 @@ setup(
     url="https://github.com/zakkarry",
     # Link from which the project can be downloaded
     download_url="https://github.com/zakkarry/retraktarr",
-    packages=["retraktarr", "retraktarr.api"],
-    package_dir={"retraktarr": "."},
-    exclude_package_data={"": ["*.conf"]},
+    packages=find_packages(exclude=[".github"]),
+    package_data={"retraktarr": ["VERSION"]},
 )
