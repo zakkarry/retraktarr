@@ -49,6 +49,5 @@ setup(
     # Link from which the project can be downloaded
     download_url="https://github.com/zakkarry/retraktarr",
     packages=find_packages(exclude=[".github"]),
-    package_dir={"retraktarr": "."},
     exclude_package_data={"": ["*.conf"]},
 )
