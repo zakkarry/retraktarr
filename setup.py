@@ -1,5 +1,4 @@
 import os
-import io
 
 from setuptools import setup, find_packages
 
@@ -15,13 +14,16 @@ except OSError as e:
     LONG_DESCRIPTION = ""
 
 try:
-    with open(os.path.join(current_directory, "VERSION"), encoding="utf-8") as f:
+    with open(
+        os.path.join(current_directory, f"retraktarr{os.path.sep}VERSION"),
+        encoding="utf-8",
+    ) as f:
         VERSION_NO = f.read()
 except OSError as e:
     VERSION_NO = ""
 
 
-with open('requirements.txt') as reqs_file:
+with open("requirements.txt") as reqs_file:
     requirements = reqs_file.read().splitlines()
 
 setup(
@@ -36,9 +38,7 @@ setup(
     version=VERSION_NO,
     # Short description of your library
     description=("a simple Arr -> Trakt.tv list sync script"),
-    entry_points={
-        "console_scripts": ["retraktarr = retraktarr:main"]
-    },
+    entry_points={"console_scripts": ["retraktarr = retraktarr:main"]},
     # Long description of your library
     install_requires=requirements,
     long_description=LONG_DESCRIPTION,
@@ -54,5 +54,5 @@ setup(
     # Link from which the project can be downloaded
     download_url="https://github.com/zakkarry/retraktarr",
     packages=find_packages(exclude=[".github"]),
-    exclude_package_data={"": ["*.conf"]},
+    package_data={"retraktarr": ["VERSION"]},
 )

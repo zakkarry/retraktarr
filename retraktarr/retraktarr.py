@@ -9,17 +9,6 @@ from retraktarr.api.trakt import TraktAPI
 from retraktarr.config import Configuration
 
 
-try:
-    with open(
-        path.join(path.dirname(path.abspath(__file__)), "VERSION"), encoding="utf-8"
-    ) as f:
-        VERSION = f.read()
-except OSError as e:
-    VERSION = "MISSING"
-
-config_path = f'{path.expanduser("~")}{path.sep}.config{path.sep}retraktarr.conf'
-
-
 def main():
     """main entry point defines args and processes stuff"""
     try:
@@ -120,21 +109,28 @@ def main():
     )
     parser.add_argument(
         "--config",
-        type=str,
-        help="Specifies configuration file",
+        action="store",
+        nargs="?",
+        const=True,
+        default=None,
+        help="If a path is provided, retraktarr will use this config file, otherwise it outputs default config location.",
     )
     args = parser.parse_args()
 
     if args.version:
         print(f"reTraktarr v{VERSION}")
         sys.exit(0)
-    if args.config:
+
+    if args.config is not True and args.config is not None:
         config_path = args.config
     else:
         config_path = (
             f'{path.expanduser("~")}{path.sep}.config{path.sep}retraktarr.conf'
         )
-    print(config_path)
+        if args.config is True:
+            print(f"Current default config file is {config_path}")
+            exit(0)
+
     config = Configuration(config_path)
     if args.oauth:
         config.get_oauth(args)
