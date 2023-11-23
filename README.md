@@ -14,18 +14,18 @@ The goal was to add the list to [Radarr](https://radarr.video), set up a filter 
 
 This use case was admittedly very narrow, and a few more use cases have emerged since.
 
-- Backing up entire Radarr/Sonarr libraries, including movies/shows you do not already have downloaded. For example, if it's missing in Radarr, PlexTraktSync would not help.
-- Restoring your library easily by importing an entire (backed up) list (in the case of migrating OSs or catastrophic failures)
-- Giving someone the ability to browse media you have (without giving them access to Plex/Jellyfin/Emby)
-- Sync multiple instances of Sonarr/Radarr
-- _Possibly more I have not considered..._
+-   Backing up entire Radarr/Sonarr libraries, including movies/shows you do not already have downloaded. For example, if it's missing in Radarr, PlexTraktSync would not help.
+-   Restoring your library easily by importing an entire (backed up) list (in the case of migrating OSs or catastrophic failures)
+-   Giving someone the ability to browse media you have (without giving them access to Plex/Jellyfin/Emby)
+-   Sync multiple instances of Sonarr/Radarr
+-   _Possibly more I have not considered..._
 
 ## Requirements
 
-- [Python 3](https://www.python.org/downloads/) (including `requests` module)
-  - `pip3 install requests`
-- [Radarr](https://radarr.video) and/or [Sonarr](https://sonarr.tv)
-- A [Trakt.tv](https://www.trakt.tv) account with [API App configured](#trakttv-api-app-setup)
+-   [Python 3](https://www.python.org/downloads/) (including `requests` module)
+    -   `pip3 install requests`
+-   [Radarr](https://radarr.video) and/or [Sonarr](https://sonarr.tv)
+-   A [Trakt.tv](https://www.trakt.tv) account with [API App configured](#trakttv-api-app-setup)
 
 ## Arr Support
 
@@ -37,11 +37,11 @@ This use case was admittedly very narrow, and a few more use cases have emerged 
 
 A [Trakt.tv](https://www.trakt.tv) account with an [API set up](#trakttv-api-app-setup) is obviously necessary.
 
-- 🚨Note: [Trakt.tv](https://www.trakt.tv) lists have limits. You can read their official statement [here](https://twitter.com/trakt/status/1536751362943332352/photo/1)🚨
+-   🚨Note: [Trakt.tv](https://www.trakt.tv) lists have limits. You can read their official statement [here](https://twitter.com/trakt/status/1536751362943332352/photo/1)🚨
 
 1. Head to [Trakt.tv API App Setup Page](https://trakt.tv/oauth/applications)
 2. Create a new application, you will only **need** to fill `Name` and `RedirectURI`
-   - I suggest using `https://google.com` for your redirect URI. We will need to steal a parameter from the redirect to complete the OAuth2 process.
+    - I suggest using `https://google.com` for your redirect URI. We will need to steal a parameter from the redirect to complete the OAuth2 process.
 3. After creating the application, click on it and you will see your `Client ID`, `Client Secret`, and an `Authorize` button.
 4. Click `Authorize`. Click `Yes`. You will be redirected to Google (or your URI) and in the URL bar you will see `?code=` followed by 64 alphanumeric characters. **Save this for now. This is your OAuth2 Authorization code.**
 5. You can now complete the OAuth2 process when you're ready using the `retraktarr` script.
@@ -89,14 +89,14 @@ options:
 
 ## Troubleshooting
 
-- If you are having problems with old entries not being removed, feel free to use the -wipe command in addition, it will delete the entire **contents** of the list **without** deleting the list itself, and resync.
-- If you want to sync multiple "filters" (tag, profile, etc) to one list, consider running multiple times with your filter arguments and the additional -cat parameter.
-- Privacy can only be set when the list is first created, specifying privacy on an already created list will do nothing.
-- Unless a list is specified using `-list` - when you use `-all` or `-r -s` - each Arr will sync to the list specified in the config.conf file.
-- Using filtered syncs with `-all` is not recommended, consider chaining multiple runs.
-- Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of -cat)
-- If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
-- If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until you're list is processed completely.
+-   If you are having problems with old entries not being removed, feel free to use the -wipe command in addition, it will delete the entire **contents** of the list **without** deleting the list itself, and resync.
+-   If you want to sync multiple "filters" (tag, profile, etc) to one list, consider running multiple times with your filter arguments and the additional -cat parameter.
+-   Privacy can only be set when the list is first created, specifying privacy on an already created list will do nothing.
+-   Unless a list is specified using `-list` - when you use `-all` or `-r -s` - each Arr will sync to the list specified in the config.conf file.
+-   Using filtered syncs with `-all` is not recommended, consider chaining multiple runs.
+-   Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of -cat)
+-   If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
+-   If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until you're list is processed completely.
 
 [start a discussion](https://github.com/zakkarry/retraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/retraktarr/issues/new)
 
