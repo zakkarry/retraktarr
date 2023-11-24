@@ -1,3 +1,14 @@
+<div align="center">
+
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![GitHub issues](https://img.shields.io/github/issues/zakkarry/retraktarr.svg)](https://github.com/zakkarry/retraktarr/issues)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/zakkarry/retraktarr.svg)](https://github.com/zakkarry/retraktarr/pulls)
+[![GitHub stars](https://img.shields.io/github/stars/zakkarry/retraktarr.svg)](https://github.com/zakkarry/retraktarr/stargazers)
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
+[![Support](https://img.shields.io/badge/buy%20me-coffee-brown)](https://tip.ary.dev)
+
+</div>
+
 # retraktarr
 
 `retraktarr` is a "reverse" [Trakt.tv](https://www.trakt.tv) list implementation for [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) that creates [Trakt.tv](https://www.trakt.tv) lists for your movies/series using APIs.
@@ -97,7 +108,3 @@ options:
 -   Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of -cat)
 -   If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
 -   If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until you're list is processed completely.
-
-[start a discussion](https://github.com/zakkarry/retraktarr/discussions/new) or [open an issue](https://github.com/zakkarry/retraktarr/issues/new)
-
-[support me with a coffee](https://tip.ary.dev)
