@@ -33,7 +33,7 @@ This use case was admittedly very narrow, and a few more use cases have emerged 
 
 ## Requirements
 
--   [Python 3](https://www.python.org/downloads/) (including `requests` module)
+-   [Python 3](https://www.python.org/downloads/) (including `requests` module if running from source)
     -   `pip3 install requests`
 -   [Radarr](https://radarr.video) and/or [Sonarr](https://sonarr.tv)
 -   A [Trakt.tv](https://www.trakt.tv) account with [API App configured](#trakttv-api-app-setup)
@@ -59,17 +59,17 @@ A [Trakt.tv](https://www.trakt.tv) account with an [API set up](#trakttv-api-app
 
 ## Installing retraktarr
 
-You can either download the source yourself or install from PyPI using the `pip install retraktarr` command.
+You can either download the source yourself or install the package from PyPI using the `pip3 install retraktarr` command.
 
 ## Configuring retraktarr
 
-`retraktarr` uses a config file, named `config.conf` to get many of its settings. However, some of these can be overridden with the arguments you pass. You can run `python3 retraktarr.py` at any time to see the available options.
+`retraktarr` uses a config file, named `retraktarr.conf` (by default) to get many of its settings. However, some of these can be overridden with an argument you pass. You can run `retraktarr` at any time to see the available options.
 
-To generate the config template, simply run `python3 retraktarr.py` in a directory without a `config.conf` file present.
+To generate the config template, simply run `retraktarr` without a `.conf` file present. It will tell you exactly where the default config file was generated and it's location.
 
 Open in your favorite text editor and complete the necessary details for your usage.
 
-If you've never run `retraktarr` before, you will need to leave your `oauth2_token` and `oauth2_refresh` options blank and use the -oauth argument to complete the authorization process and automatically save your tokens. They will be automatically refreshed if a valid refresh token is available upon expiration.
+If you've never run `retraktarr` before, you will need to leave your `oauth2_token` and `oauth2_refresh` options blank and use the `--oauth` argument to [complete the authorization](#trakttv-api-app-setup) process and automatically save your tokens. They will be automatically refreshed if a valid refresh token is available upon expiration.
 
 ## Usage (CLI)
 
@@ -95,11 +95,12 @@ options:
   --refresh             Forces a refresh_token exchange (oauth) and sets the config to a new tokens.
   --timeout TIMEOUT     Specifies the timeout in seconds to use for POST commands to Trakt.tv
   --version             Displays version information
-  --config CONFIG       Specifies configuration file
+  --config CONFIG       If a path is provided, retraktarr will use this config file, otherwise it outputs default config location.
 ```
 
 ## Troubleshooting
 
+-   If you are running from the source, you will need to run `retraktarr.py` in the root directory, and not in the retraktarr directory.
 -   If you are having problems with old entries not being removed, feel free to use the -wipe command in addition, it will delete the entire **contents** of the list **without** deleting the list itself, and resync.
 -   If you want to sync multiple "filters" (tag, profile, etc) to one list, consider running multiple times with your filter arguments and the additional -cat parameter.
 -   Privacy can only be set when the list is first created, specifying privacy on an already created list will do nothing.
