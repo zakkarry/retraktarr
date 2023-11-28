@@ -2,6 +2,7 @@
 """ handles the arr api calls and requests """
 import sys
 import requests
+from urllib.parse import urlparse
 
 
 class ArrAPI:
@@ -19,11 +20,29 @@ class ArrAPI:
     def arr_get(self, arr, endpoint, timeout):
         """sends the get request to the arr endpoint"""
         try:
-            response = requests.get(
-                f"{self.api_url}/api/v3/{endpoint}",
-                params={"apikey": self.api_key},
-                timeout=timeout,
-            )
+            parsed_url = urlparse(self.api_url)
+
+            url_host = parsed_url._replace(
+                netloc=parsed_url.netloc.split("@")[-1]
+            ).netloc
+
+            url_path = parsed_url.path if parsed_url.path is not None else ""
+
+            request_url = f"{parsed_url.scheme}://{url_host}{url_path}"
+
+            if (parsed_url.username is None) or (parsed_url.password is None):
+                response = requests.get(
+                    f"{request_url}/api/v3/{endpoint}",
+                    params={"apikey": self.api_key},
+                    timeout=timeout,
+                )
+            else:
+                response = requests.get(
+                    f"{request_url}/api/v3/{endpoint}",
+                    params={"apikey": self.api_key},
+                    timeout=timeout,
+                    auth=(parsed_url.username, parsed_url.password),
+                )
             response.raise_for_status()
             if response.status_code == 401:
                 print(
