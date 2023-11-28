@@ -44,12 +44,6 @@ class ArrAPI:
                     auth=(parsed_url.username, parsed_url.password),
                 )
             response.raise_for_status()
-            if response.status_code == 401:
-                print(
-                    f"{arr} Error: API key incorrect. "
-                    "Please double check your key and config file."
-                )
-                sys.exit(1)
             return response
         except requests.exceptions.ConnectTimeout:
             print(f"{arr}: Connection Timed Out. Check your URL.")
@@ -60,6 +54,12 @@ class ArrAPI:
             print(f"{arr}: {error}")
             sys.exit(1)
         except requests.exceptions.HTTPError as error:
+            if "401" in str(error):
+                print(
+                    f"{arr} Error: API key incorrect. "
+                    "Please double check your key and config file."
+                )
+                sys.exit(1)
             print(f"{arr} Error:")
             print(f"{arr}: {error}")
             sys.exit(1)

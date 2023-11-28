@@ -95,6 +95,10 @@ class TraktAPI:
                     "\nPlease check your config and attempt the oauth command (-o) again"
                 )
                 sys.exit(1)
+            print(
+                f"Trakt.tv Error: Unexpected status code return: {response.status_code}."
+            )
+            sys.exit(1)
 
     def get_list(self, args, media_type):
         """ " gets the specified trakt list and settings (account limits)"""

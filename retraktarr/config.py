@@ -24,6 +24,7 @@ class Configuration:
                     "username": "",
                     "redirect_uri": "",
                     "oauth2_token": "",
+                    "oauth2_refresh": "",
                 }
                 self.conf["Radarr"] = {
                     "url": "",
@@ -193,7 +194,7 @@ class Configuration:
             print(f"Error occurred while reading the configuration values: {error}")
             sys.exit(1)
         if not re.match(
-            r"^(?:https?://)?(?:[-\w.]+)+(?::\d+)?(?:/.*)?$", arr_api.api_url
+            r"^(?:https?://)?(?:.+:.+@)?(?:[-\w.]+)+(?::\d+)?(?:/.*)?$", arr_api.api_url
         ):
             print(
                 f"Error: Invalid configuration value. [{arr}] 'url' does not match a URL pattern."
