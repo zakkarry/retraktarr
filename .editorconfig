@@ -18,3 +18,11 @@ trim_trailing_whitespace = false
 
 [VERSION]
 insert_final_newline = false
+
+[{Dockerfile,*.bash,*.sh,*.py}]
+indent_style = space
+indent_size = 4
+
+[{Makefile,go.mod,go.sum,*.go,.gitmodules}]
+indent_style = tab
+indent_size = 4
