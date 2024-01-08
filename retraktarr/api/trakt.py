@@ -352,7 +352,8 @@ class TraktAPI:
                     }
             else:
                 needed_ids = set(arr_ids)
-
+        else:
+            needed_ids = set(arr_ids)
         # does some calculations on what the end list count would be
         # compares to your trakt list limits
         if (
