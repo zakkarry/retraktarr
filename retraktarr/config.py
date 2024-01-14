@@ -50,19 +50,6 @@ class Configuration:
         else:
             try:
                 self.conf.read(config_file)
-                # checks for alphanumeric usernames
-                if (
-                    bool(
-                        re.compile(r"^[a-zA-Z0-9]+$").match(
-                            self.conf.get("Trakt", "username")
-                        )
-                    )
-                    is False
-                ):
-                    print(
-                        "Error occurred while reading the configuration file:\nOnly alphanumeric usernames are supported currently."
-                    )
-                    sys.exit(1)
             except configparser.Error as error:
                 print(f"Error occurred while reading the configuration file: {error}")
                 sys.exit(1)

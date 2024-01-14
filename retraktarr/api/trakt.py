@@ -3,6 +3,7 @@
 import sys
 import time
 import json
+import re
 import requests
 from retraktarr.config import Configuration
 
@@ -38,6 +39,15 @@ class TraktAPI:
             "trakt-api-key": self.trakt_api_key,
             "Authorization": f"Bearer {oauth_token}",
         }
+
+    def normalize_trakt(self, input):
+        # remove all parenthesis and brackets
+        normalized = re.sub(r"[()\[\]]", "", input)
+        # non-'-' and '_' characters with a hyphen
+        normalized = re.sub(r"[^a-zA-Z0-9-_]", "-", normalized)
+        # duplicate sequential hyphens
+        normalized = re.sub(r"-+", "-", normalized)
+        return normalized.strip("-")
 
     def get_trakt(self, path, args, media_type, timeout):
         """gets json response from the specified path for applicable media_type (show/movie)"""
@@ -111,7 +121,10 @@ class TraktAPI:
 
         # sends a get request for the list and all of its items
         response = self.get_trakt(
-            f"users/{self.user}/lists/{self.list}/items", args, media_type, timeout=30
+            f"users/{self.normalize_trakt(self.user)}/lists/{self.normalize_trakt(self.list)}/items",
+            args,
+            media_type,
+            timeout=30,
         )
 
         # returns empty lists if the list does not exist
@@ -165,7 +178,7 @@ class TraktAPI:
         time.sleep(1)
         try:
             response = self.trakt_session.post(
-                f"https://api.trakt.tv/users/{self.user}/{path}",
+                f"https://api.trakt.tv/users/{self.normalize_trakt(self.user)}/{path}",
                 headers=self.trakt_hdr,
                 data=post_json,
                 timeout=timeout if not args.timeout else self.post_timeout,
@@ -208,12 +221,12 @@ class TraktAPI:
                 # return the response as if nothing happened :)
                 print(
                     "Trakt.tv Error (404): "
-                    f"https://trakt.tv/users/{self.user}/lists/{self.list} not found...\n"
+                    f"https://trakt.tv/users/{self.normalize_trakt(self.user)}/lists/{self.normalize_trakt(self.list)} not found...\n"
                 )
                 trakt_add_list = {
                     "name": self.list,
-                    "description": "Created using reTraktarr "
-                    "(https://github.com/zakkarry/reTraktarr)",
+                    "description": "Created using retraktarr "
+                    "(https://github.com/zakkarry/retraktarr)",
                     "privacy": self.list_privacy,
                     "allow_comments": False,
                 }
@@ -379,7 +392,7 @@ class TraktAPI:
         ):
             # sends the remove from list request
             self.post_trakt(
-                f"lists/{self.list}/items/remove",
+                f"lists/{self.normalize_trakt(self.list)}/items/remove",
                 json.dumps(trakt_del),
                 args,
                 media_type,
@@ -476,7 +489,7 @@ class TraktAPI:
         }
         # sends the add to list request
         response = self.post_trakt(
-            f"lists/{self.list}/items",
+            f"lists/{self.normalize_trakt(self.list)}/items",
             json.dumps(trakt_add),
             args,
             media_type,
