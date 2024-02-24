@@ -56,6 +56,11 @@ def main():
         help="Synchronize only monitored content with Trakt.tv",
     )
     parser.add_argument(
+        "--missing",
+        action="store_true",
+        help="Synchronize only missing Radarr content with Trakt.tv",
+    )
+    parser.add_argument(
         "--qualityprofile",
         "-qp",
         type=str,
@@ -159,7 +164,6 @@ def main():
             args, arr_api.endpoint["Radarr"][0]
         )
         arr_ids, arr_imdb, arr_data = arr_api.get_list(args, "Radarr")
-
         print("[Radarr]")
         trakt_api.add_to_list(
             args,
