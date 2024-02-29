@@ -79,7 +79,7 @@ class TraktAPI:
             # checks if an oauth_refresh token is available
             # and if so assume that the token has expired and attempt a refresh automatically
             if "401" in str(error) or "400" in str(error) or "403" in str(error):
-                config = Configuration("config.conf")
+                config = Configuration("retraktarr.conf")
 
                 # checks the config for the refresh, if exists, update the
                 # header and rerun the command and return original intended results
