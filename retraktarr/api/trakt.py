@@ -102,7 +102,7 @@ class TraktAPI:
                 # no oauth_refresh token is available, error out.
                 print(
                     "Error: You likely have a bad ClientID/Secret or expired/invalid token."
-                    "\nPlease check your config and attempt the oauth command (-o) again"
+                    "\nPlease check your config and attempt the refresh or oauth command (-o) again"
                 )
                 sys.exit(1)
             print(
