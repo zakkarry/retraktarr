@@ -200,7 +200,7 @@ def main():
         print(f"Total Series: {len(arr_ids)}")
         sys.exit(1)
 
-    if args.radarr or args.all:
+    if args.radarr or args.all or args.refresh:
         sys.exit(1)
 
     parser.print_help()
