@@ -73,7 +73,9 @@ class ArrAPI:
 
         # if it can't find an id for the term error and exit
         if id_dict.get(search_term) is None:
-            print(f"{arr} Error: No matching {endpoint if (endpoint != "qualityprofile") else "quality profile"} found.")
+            print(
+                f'{arr} Error: No matching {endpoint if (endpoint != "qualityprofile") else "quality profile"} found.'
+            )
             sys.exit(1)
 
         # return the id
@@ -93,7 +95,8 @@ class ArrAPI:
                 item.get("qualityProfileId"),
                 item.get("title"),
                 item.get("tags"),
-                item.get("hasFile") if (arr == "Radarr") else None
+                item.get("hasFile") if (arr == "Radarr") else None,
+                item.get("genres"),
             ]
         arr_ids = list(arr_data.keys())
 
@@ -118,6 +121,17 @@ class ArrAPI:
             arr_ids = list(
                 filter(lambda item: arr_data.get(item, [None])[5] == False, arr_ids)
             )
+        if args.genre:
+            genres = [genre.strip() for genre in args.genre.split(",")]
+            arr_ids = list(
+                filter(
+                    lambda item: any(
+                        genre in arr_data.get(item, [None])[6] for genre in genres
+                    ),
+                    arr_ids,
+                )
+            )
+
         # if imdb id is in arr, add it to the imdb id list
         arr_imdb = [
             value[1][0]

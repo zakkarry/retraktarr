@@ -97,6 +97,12 @@ def main():
         "(private/friends/public - overrides config file settings)",
     )
     parser.add_argument(
+        "--genre",
+        "-g",
+        type=str,
+        help="Specifies the genre(s) of content to add to your list (OR logic)",
+    )
+    parser.add_argument(
         "--refresh",
         action="store_true",
         help="Forces a refresh_token exchange (oauth) "
