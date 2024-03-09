@@ -15,7 +15,7 @@
 
 ## Introduction
 
-`retraktarr` is a Python script to sync your [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) library to a [Trakt.tv](https://www.trakt.tv) lists using the respective APIs.
+`retraktarr` is a Python script to sync your [Radarr](https://radarr.video)/[Sonarr](https://sonarr.tv) library to a [Trakt.tv](https://www.trakt.tv) list using the respective APIs.
 
 The original idea stemmed from my wanting to have a list of monitored movies I could share with friends. This was to be the equivalent of a mdblist, but cherry-picked. Providing a more curated list of what **I** believed was worth considering to watch for downloading.
 
@@ -55,7 +55,7 @@ A [Trakt.tv](https://www.trakt.tv) account with an [API set up](#trakttv-api-app
     - I suggest using `https://google.com` for your redirect URI. We will need to steal a parameter from the redirect to complete the OAuth2 process.
 3. After creating the application, click on it and you will see your `Client ID`, `Client Secret`, and an `Authorize` button.
 4. Click `Authorize`. Click `Yes`. You will be redirected to Google (or your URI) and in the URL bar you will see `?code=` followed by 64 alphanumeric characters. **Save this for now. This is your OAuth2 Authorization code.**
-5. You can now complete the OAuth2 process when you're ready using the `retraktarr` script.
+5. You can now complete the OAuth2 process when you're ready using the `retraktarr`.
 
 ## Installing retraktarr
 
@@ -83,6 +83,7 @@ options:
   --sonarr, -s          Synchronize Sonarr series with Trakt.tv
   --all, -all, -a       Synchronize both Starr apps with Trakt.tv
   --mon, -m             Synchronize only monitored content with Trakt.tv
+  --missing             Synchronize only missing Radarr content with Trakt.tv
   --qualityprofile QUALITYPROFILE, -qp QUALITYPROFILE
                         The quality profile you wish to sync to Trakt.tv
   --tag TAG, -t TAG     The arr tag you wish to sync to Trakt.tv
@@ -92,6 +93,8 @@ options:
   --privacy PRIVACY, -p PRIVACY
                         Specifies the Trakt.tv list privacy settings (private/friends/public - overrides config file
                         settings)
+  --genre GENRE, -g GENRE
+                        Specifies the genre(s) of content to add to your list (OR logic)
   --refresh             Forces a refresh_token exchange (oauth) and sets the config to a new tokens.
   --timeout TIMEOUT     Specifies the timeout in seconds to use for POST commands to Trakt.tv
   --version             Displays version information
@@ -101,11 +104,11 @@ options:
 ## Troubleshooting
 
 -   If you are running from the source, you will need to run `retraktarr.py` in the root directory, and not in the retraktarr directory.
--   If you are having problems with old entries not being removed, feel free to use the -wipe command in addition, it will delete the entire **contents** of the list **without** deleting the list itself, and resync.
--   If you want to sync multiple "filters" (tag, profile, etc) to one list, consider running multiple times with your filter arguments and the additional -cat parameter.
+-   If you are having problems with old entries not being removed, feel free to use the -wipe command in addition, it will delete the entire **contents** of the list **without** deleting the list itself, and then resync.
+-   If you want to sync multiple "filters" (tag, profile, etc) to one list, consider running multiple times with your filter arguments and the additional `--cat/-c` parameter.
 -   Privacy can only be set when the list is first created, specifying privacy on an already created list will do nothing.
--   Unless a list is specified using `-list` - when you use `-all` or `-r -s` - each Arr will sync to the list specified in the config.conf file.
--   Using filtered syncs with `-all` is not recommended, consider chaining multiple runs.
--   Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of -cat)
--   If you repeatedly get the same movies reporting deleted, but not deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
--   If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until you're list is processed completely.
+-   Unless a list is specified using `-list` - when you use `--all` or `-r -s` - each Arr will sync to the list specified in the config.conf file.
+-   Using filtered syncs with `-all` is not generally recommended, consider chaining multiple runs.
+-   Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of `--cat/-c`)
+-   If you repeatedly get the same movies reporting as deleted, but not actually deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
+-   If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until your list is processed completely.
