@@ -112,3 +112,5 @@ options:
 -   Syncing an instance will only remove non-syncing media in its associated type. If you have a list with movies and TV added and run a Sonarr sync to it, it will only remove **SHOWS** that are not present in the sync. (excludes usage of `--cat/-c`)
 -   If you repeatedly get the same movies reporting as deleted, but not actually deleting, this is almost certainly due to an outdated ID (usually TMDB) being associated with the movie on Trakt. Report it and give them the correct link. If after it's updated it does not fix it, create an issue with details.
 -   If you're getting timeouts during runs, particularly during `--wipe` or large list processing, use the `--timeout <sec>` command. Default is 30, increase it until your list is processed completely.
+
+test
