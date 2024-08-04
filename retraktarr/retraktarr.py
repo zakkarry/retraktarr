@@ -204,10 +204,10 @@ def main():
             trakt_ids,
         )
         print(f"Total Series: {len(arr_ids)}")
-        sys.exit(1)
+        sys.exit(0)
 
-    if args.radarr or args.all or args.refresh:
-        sys.exit(1)
+    if args.radarr or args.all:
+        sys.exit(0)
 
     parser.print_help()
 
