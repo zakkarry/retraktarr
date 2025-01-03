@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
 """ validation and config generation - pretty standard shit """
-import sys
-import re
 import configparser
 import os
+import re
+import sys
+
 import requests
 
 
@@ -124,7 +125,7 @@ class Configuration:
                     "Your configuration file was successfully updated "
                     "with your access/refresh token.\n"
                 )
-            if args.refresh is False and refresh is False:
+            if args.refresh is True and refresh is False:
                 sys.exit(1)
             else:
                 return response.json().get("access_token")
