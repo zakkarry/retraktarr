@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 """ handles the trakt api lists and requests (add/delete/etc) """
-import sys
-import time
 import json
 import re
+import sys
+import time
+
 import requests
+
 from retraktarr.config import Configuration
 
 
@@ -17,7 +19,7 @@ class TraktAPI:
         self.user = trakt_user
         self.trakt_secret = trakt_secret
         self.list = ""
-        self.json: dict
+        self.json = {}
         self.response = None
         self.list_len = []
         self.list_privacy = "public"
@@ -40,9 +42,10 @@ class TraktAPI:
             "Authorization": f"Bearer {oauth_token}",
         }
 
-    def normalize_trakt(self, input):
+    @staticmethod
+    def normalize_trakt(to_normalize):
         # remove all parenthesis and brackets
-        normalized = re.sub(r"[()\[\]]", "", input)
+        normalized = re.sub(r"[()\[\]]", "", to_normalize)
         # non-'-' and '_' characters with a hyphen
         normalized = re.sub(r"[^a-zA-Z0-9-_]", "-", normalized)
         # duplicate sequential hyphens
@@ -169,7 +172,7 @@ class TraktAPI:
         self.json = response.json()
         return tvdb_ids, tmdb_ids, imdb_ids, trakt_ids
 
-    def post_trakt(self, path, post_json, args, media_type, timeout):
+    def post_trakt(self, list_name, path, post_json, args, media_type, timeout):
         """
         sends a post command to trakt
         post_json is json.dumps'd json, path is the url to append to the user url
@@ -211,7 +214,7 @@ class TraktAPI:
             elif "420" in str(error):
                 print(
                     "Trakt.tv Error:"
-                    f"Your additions to ({self.trakt_list}) exceeds your item limits."
+                    f"Your additions to ({list_name}) exceeds your item limits."
                     "You will need Trakt VIP."
                 )
                 sys.exit(1)
@@ -232,13 +235,19 @@ class TraktAPI:
                 }
                 # adds the list
                 self.post_trakt(
-                    "lists", json.dumps(trakt_add_list), args, media_type, timeout=15
+                    self.list,
+                    "lists",
+                    json.dumps(trakt_add_list),
+                    args,
+                    media_type,
+                    timeout=15,
                 )
                 print(f"Creating {self.list_privacy} Trakt.tv list: ({self.list})...\n")
                 time.sleep(1)
 
                 # retry the POST and returns the intended original results
                 response = self.post_trakt(
+                    self.list,
                     path,
                     post_json,
                     args,
@@ -392,6 +401,7 @@ class TraktAPI:
         ):
             # sends the remove from list request
             self.post_trakt(
+                self.list,
                 f"lists/{self.normalize_trakt(self.list)}/items/remove",
                 json.dumps(trakt_del),
                 args,
@@ -465,7 +475,7 @@ class TraktAPI:
         del_from_list and updates/adds to the list
         """
 
-        trakt_add = {media_type: []}
+        # blank type for trakt_add - trakt_add = {media_type: []}
         needed_ids = self.del_from_list(
             args,
             media_type,
@@ -481,14 +491,17 @@ class TraktAPI:
         # build the add to list json, if imdb is not available just use tmdb/tvdb
         trakt_add = {
             media_type: [
-                {"ids": {idtag: item, "imdb": arr_data.get(item, [None])[0]}}
-                if arr_data.get(item, [None])[0] is not None
-                else {"ids": {idtag: item}}
+                (
+                    {"ids": {idtag: item, "imdb": arr_data.get(item, [None])[0]}}
+                    if arr_data.get(item, [None])[0] is not None
+                    else {"ids": {idtag: item}}
+                )
                 for item in needed_ids
             ]
         }
         # sends the add to list request
         response = self.post_trakt(
+            self.list,
             f"lists/{self.normalize_trakt(self.list)}/items",
             json.dumps(trakt_add),
             args,
