@@ -10,7 +10,7 @@ current_directory = os.path.dirname(os.path.abspath(__file__))
 try:
     with open(os.path.join(current_directory, "README.md"), encoding="utf-8") as f:
         LONG_DESCRIPTION = f.read()
-except OSError as e:
+except OSError:
     LONG_DESCRIPTION = ""
 
 try:
@@ -19,7 +19,7 @@ try:
         encoding="utf-8",
     ) as f:
         VERSION_NO = f.read()
-except OSError as e:
+except OSError:
     VERSION_NO = ""
 
 
@@ -37,7 +37,7 @@ setup(
     license="MIT",
     version=VERSION_NO,
     # Short description of your library
-    description=("a simple Arr -> Trakt.tv list sync script"),
+    description="a simple Arr -> Trakt.tv list sync script",
     entry_points={"console_scripts": ["retraktarr = retraktarr:main"]},
     # Long description of your library
     install_requires=requirements,

@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """ main script, arguments and executions """
-import sys
 import argparse
-from os import name, path, getenv
+import sys
+from os import path
 
 from retraktarr.api.arr import ArrAPI
 from retraktarr.api.trakt import TraktAPI
@@ -16,7 +16,7 @@ def main():
             path.join(path.dirname(path.abspath(__file__)), "VERSION"), encoding="utf-8"
         ) as f:
             VERSION = f.read()
-    except OSError as e:
+    except OSError:
         VERSION = "MISSING"
 
     parser = argparse.ArgumentParser(

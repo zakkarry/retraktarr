@@ -1,16 +1,17 @@
 #!/usr/bin/env python3
 """ handles the arr api calls and requests """
 import sys
-import requests
 from urllib.parse import urlparse
+
+import requests
 
 
 class ArrAPI:
     """arr api handler class"""
 
     def __init__(self):
-        self.api_url: str
-        self.api_key: str
+        self.api_url = ""
+        self.api_key = ""
         self.endpoint = {
             "Sonarr": ("series", "tvdb", "shows"),
             "Radarr": ("movie", "tmdb", "movies"),
