@@ -154,6 +154,7 @@ def main():
         trakt_user,
         trakt_secret,
     ) = config.validate_trakt_credentials()
+    arr_api = None
     trakt_api = TraktAPI(oauth2_bearer, trakt_api_key, trakt_user, trakt_secret)
     if args.list:
         trakt_api.list = args.list

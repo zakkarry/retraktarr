@@ -109,25 +109,38 @@ class ArrAPI:
         if args.qualityprofile:
             qp_id = self.get_id(arr, args.qualityprofile, "qualityprofile", "name")
             arr_ids = list(
-                filter(lambda item: arr_data.get(item, [None])[2] is qp_id, arr_ids)
+                filter(
+                    lambda arr_data_item: arr_data.get(arr_data_item, [None])[2]
+                    is qp_id,
+                    arr_ids,
+                )
             )
 
         # same as above, but for tags
         if args.tag:
             tag_id = self.get_id(arr, args.tag, "tag", "label")
             arr_ids = list(
-                filter(lambda item: tag_id in arr_data.get(item, [None])[4], arr_ids)
+                filter(
+                    lambda arr_tag_item: tag_id
+                    in arr_data.get(arr_tag_item, [None])[4],
+                    arr_ids,
+                )
             )
         if arr == "Radarr" and args.missing:
             arr_ids = list(
-                filter(lambda item: arr_data.get(item, [None])[5] == False, arr_ids)
+                filter(
+                    lambda arr_data_item: arr_data.get(arr_data_item, [None])[5]
+                    == False,
+                    arr_ids,
+                )
             )
         if args.genre:
             genres = [genre.strip() for genre in args.genre.split(",")]
             arr_ids = list(
                 filter(
-                    lambda item: any(
-                        genre in arr_data.get(item, [None])[6] for genre in genres
+                    lambda arr_genre_data_item: any(
+                        genre in arr_data.get(arr_genre_data_item, [None])[6]
+                        for genre in genres
                     ),
                     arr_ids,
                 )

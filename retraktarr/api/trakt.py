@@ -54,7 +54,7 @@ class TraktAPI:
 
     def get_trakt(self, path, args, media_type, timeout):
         """gets json response from the specified path for applicable media_type (show/movie)"""
-
+        response = None
         time.sleep(1)
         try:
             response = self.trakt_session.get(

@@ -57,6 +57,7 @@ class Configuration:
 
     def get_oauth(self, args, refresh=False):
         """gets the oauth token via refresh or code"""
+        authorization_code = None
         try:
             client_id = self.conf.get("Trakt", "client_id")
             client_secret = self.conf.get("Trakt", "client_secret")
