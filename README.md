@@ -4,6 +4,7 @@
 [![GitHub issues](https://img.shields.io/github/issues/zakkarry/retraktarr.svg)](https://github.com/zakkarry/retraktarr/issues)
 [![GitHub pull requests](https://img.shields.io/github/issues-pr/zakkarry/retraktarr.svg)](https://github.com/zakkarry/retraktarr/pulls)
 [![GitHub stars](https://img.shields.io/github/stars/zakkarry/retraktarr.svg)](https://github.com/zakkarry/retraktarr/stargazers)
+[![Pypi.org Repo (pip)](https://img.shields.io/pypi/v/retraktarr)](https://pypi.org/project/retraktarr/)
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/downloads/)
 [![Support](https://img.shields.io/badge/buy%20me-coffee-brown)](https://tip.ary.dev)
 
