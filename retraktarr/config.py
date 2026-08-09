@@ -73,16 +73,6 @@ class Configuration:
                         "Please use -o instead."
                     )
                     sys.exit(1)
-            if (
-                (len(authorization_code) != 64)
-                or (len(client_id) != 64)
-                or (len(client_secret) != 64)
-            ):
-                print(
-                    "You need to set and provide a valid code, client_id, and client_secret. "
-                    "Please double check, and rerun the oauth command."
-                )
-                sys.exit(1)
             if not re.match(
                 r"^(?:https?://)?(?:[-\w.]+)+(?::\d+)?(?:/.*)?$", redirect_uri
             ):
@@ -154,22 +144,7 @@ class Configuration:
                 "[Trakt] username should not be empty."
             )
             sys.exit(1)
-        # validate the lengths of all the keys are correct
-        if (
-            len(oauth2_bearer) != 64
-            or len(trakt_api_key) != 64
-            or len(trakt_secret) != 64
-        ):
-            print(
-                "Error: Invalid configuration values. "
-                "[Trakt] oauth2_token/client_id/client_secret "
-                "should all have lengths of 64 characters."
-            )
-            print(
-                "Run with -o parameter with accurate username, redirect_uri, "
-                "client_id, and client_secret values set in config."
-            )
-            sys.exit(1)
+
         return oauth2_bearer, trakt_api_key, user, trakt_secret
 
     def validate_arr_configuration(self, arr_api, trakt_api, arr, args):
